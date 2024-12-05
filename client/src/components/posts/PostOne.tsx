@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
   Avatar,
   AvatarGroup,
@@ -7,35 +6,52 @@ import {
   Stack,
   Stepper,
   useMediaQuery,
+  useTheme,
 } from "@mui/material";
-const PostOne: React.FC = () => {
-  const _700 = useMediaQuery("(min-width:700px)");
+import { useSelector } from "react-redux";
+import { RootState } from "../../rtk/store";
 
+const PostOne: React.FC = () => {
+  const theme = useTheme();
+  const isMediumScreen = useMediaQuery(theme.breakpoints.up("sm"));
+  const { darkMode } = useSelector(({ service }: RootState) => service);
   return (
     <>
       <Stack
-        flexDirection={"column"}
-        alignItems={"center"}
-        justifyContent={"space-between"}
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{ height: "100%" }}
       >
+        {/* Badge with Avatar */}
         <Badge
           badgeContent={"+"}
-          color="info"
+          color={"info"}
           overlap="circular"
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         >
           <Avatar
             alt="user-logo"
             src=""
-            sx={{ width: _700 ? 36 : 28, height: _700 ? 36 : 28 }}
+            sx={{
+              width: isMediumScreen ? 36 : 28,
+              height: isMediumScreen ? 36 : 28,
+            }}
           />
         </Badge>
-        <Stack flexDirection={"column"} alignItems={"center"} height={"100%"}>
+
+        {/* Stepper and AvatarGroup */}
+        <Stack
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="space-between"
+          height="100%"
+        >
           <Stepper
             orientation="vertical"
             activeStep={0}
             sx={{
-              border: ".1rem solid gray",
+              border: darkMode ? ".1rem solid white" : ".1rem solid gray",
               width: "0px",
               height: "100%",
             }}
@@ -44,9 +60,9 @@ const PostOne: React.FC = () => {
             max={2}
             sx={{
               "& .MuiAvatar-root": {
-                width: _700 ? 24 : 16,
-                height: _700 ? 24 : 16,
-                fontSize: _700 ? 12 : 8,
+                width: isMediumScreen ? 24 : 16,
+                height: isMediumScreen ? 24 : 16,
+                fontSize: isMediumScreen ? 12 : 8,
               },
             }}
           >

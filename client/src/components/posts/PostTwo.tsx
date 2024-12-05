@@ -8,96 +8,118 @@ import {
   ModeCommentOutlined,
   ModeComment,
 } from "@mui/icons-material";
-import { Checkbox, Stack, Typography, useMediaQuery } from "@mui/material";
+import {
+  Checkbox,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import React from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../rtk/store";
 
 const PostTwo: React.FC = () => {
-  const _300 = useMediaQuery("(min-width:300px)");
-  const _400 = useMediaQuery("(min-width:400px)");
-  const _500 = useMediaQuery("(min-width:500px)");
-  const _700 = useMediaQuery("(min-width:700px)");
+  const { darkMode } = useSelector(({ service }: RootState) => service);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.up("sm"));
+  const isMediumScreen = useMediaQuery(theme.breakpoints.up("md"));
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
+
   return (
-    <Stack flexDirection={"column"} justifyContent={"space-between"}>
-      <Stack flexDirection={"column"} gap={2}>
-        <Stack flexDirection={"column"}>
+    <Stack
+      flexDirection="column"
+      justifyContent="space-between"
+      gap={3}
+      width={{ xs: "90%", sm: "70%", md: "60%" }}
+      mx={2}
+    >
+      {/* User Info and Image */}
+      <Stack spacing={2}>
+        <Stack>
           <Typography
             variant="h6"
-            fontSize={_700 ? "1.2rem" : _500 ? "1rem" : ".9rem"}
-            color="GrayText"
+            fontSize={
+              isLargeScreen ? "1.2rem" : isMediumScreen ? "1rem" : ".9rem"
+            }
+            color={darkMode ? "white" : "GrayText"}
           >
-            Akshat tandon
+            Akshat Tandon
           </Typography>
           <Typography
             variant="subtitle2"
             fontSize={
-              _700 ? "1.2rem" : _400 ? "1rem" : _300 ? ".9rem" : ".8rem"
+              isLargeScreen ? "1rem" : isMediumScreen ? "0.9rem" : "0.8rem"
             }
-            color="GrayText"
+            color={darkMode ? "white" : "GrayText"}
           >
-            hi guyz ! comment on this project
+            Hi guys! Comment on this project
           </Typography>
         </Stack>
         <img
-          src="/Threads-logo-white-bg.png"
-          alt="Image"
+          src="/Threads-logo-black-bg.webp"
+          alt="Post Image"
           loading="lazy"
-          width={
-            _700
+          style={{
+            width: isLargeScreen
               ? "400px"
-              : _500
+              : isMediumScreen
               ? "350px"
-              : _400
-              ? "250px"
-              : _300
-              ? "180px"
-              : "150px"
-          }
-          height={"auto"}
+              : isSmallScreen
+              ? "300px"
+              : "250px",
+            height: "300px",
+            margin: "1 auto",
+            borderRadius: "4px", // Slightly rounded corners
+            objectFit: "cover", // Ensure proper scaling of the image
+          }}
         />
       </Stack>
-      <Stack flexDirection={"column"} gap={1}>
-        <Stack flexDirection={"row"} gap={2} m={1}>
-          <Checkbox
-            size={_700 ? "medium" : "small"}
-            icon={<FavoriteBorder />}
-            checkedIcon={<Favorite />}
-          />
-          <Checkbox
-            size={_700 ? "medium" : "small"}
-            icon={<ModeCommentOutlined />}
-            checkedIcon={<ModeComment />}
-          />
-          <Checkbox
-            size={_700 ? "medium" : "small"}
-            icon={<LoopOutlined />}
-            checkedIcon={<Loop />}
-          />
 
+      {/* Interaction Buttons */}
+      <Stack spacing={2}>
+        <Stack direction="row" spacing={2} justifyContent="center">
           <Checkbox
-            size={_700 ? "medium" : "small"}
-            icon={<SendOutlined />}
-            checkedIcon={<Send />}
+            size={isLargeScreen ? "medium" : "small"}
+            icon={
+              <FavoriteBorder sx={{ color: darkMode ? "white" : "gray" }} />
+            }
+            checkedIcon={<Favorite sx={{ color: "red" }} />}
+          />
+          <Checkbox
+            size={isLargeScreen ? "medium" : "small"}
+            icon={
+              <ModeCommentOutlined
+                sx={{ color: darkMode ? "white" : "gray" }}
+              />
+            }
+            checkedIcon={<ModeComment sx={{ color: "blue" }} />}
+          />
+          <Checkbox
+            size={isLargeScreen ? "medium" : "small"}
+            icon={<LoopOutlined sx={{ color: darkMode ? "white" : "gray" }} />}
+            checkedIcon={<Loop sx={{ color: "green" }} />}
+          />
+          <Checkbox
+            size={isLargeScreen ? "medium" : "small"}
+            icon={<SendOutlined sx={{ color: darkMode ? "white" : "gray" }} />}
+            checkedIcon={<Send sx={{ color: "purple" }} />}
           />
         </Stack>
-        <Stack
-          flexDirection={"row"}
-          gap={1}
-          position={"relative"}
-          left={5}
-          mx={1}
-          top={-3}
-        >
+
+        {/* Like and Comment Count */}
+        <Stack direction="row" spacing={1} pl={2}>
           <Typography
             variant="caption"
-            color="GrayText"
-            fontSize={_700 ? "1rem" : ".9rem"}
+            fontSize={isMediumScreen ? "1rem" : "0.9rem"}
+            color={darkMode ? "white" : "GrayText"}
           >
             5 likes
           </Typography>
           <Typography
             variant="caption"
-            color="GrayText"
-            fontSize={_700 ? "1rem" : ".9rem"}
+            fontSize={isMediumScreen ? "1rem" : "0.9rem"}
+            color={darkMode ? "white" : "GrayText"}
           >
             2 comments
           </Typography>

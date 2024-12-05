@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ESNext", // Use ESNext for output
+    "module": "ESNext", // Use ES modules
+    "moduleResolution": "node", // Resolve modules like Node.js
+    "strict": true, // Enable strict type checking
+    "esModuleInterop": true, // Allow default imports
+    "skipLibCheck": true, // Skip library check
+    "allowJs": true, // Allow JS files if needed
+    "resolveJsonModule": true // Allow importing .json files
+  }
+}

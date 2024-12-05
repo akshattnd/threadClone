@@ -8,6 +8,8 @@ const Home: React.FC = () => {
       <InputThread />
       <Stack flexDirection={"column"} gap={2} mb={5}>
         <Post />
+        <Post />
+        <Post />
       </Stack>
       <Button
         size={"large"}

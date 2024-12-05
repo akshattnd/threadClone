@@ -5,31 +5,55 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import { useSelector } from "react-redux";
+import { RootState } from "../../rtk/store";
 
 export const ProfileBar = () => {
+  const { darkMode } = useSelector(({ service }: RootState) => service);
   const _700 = useMediaQuery("(min-width:700px)");
   return (
     <Stack
       direction={"row"}
       mx="auto"
       justifyContent={"space-between"}
-      px={1}
+      px={2}
       py={2}
-      boxShadow={"5px  5px 5px  gray"}
+      boxShadow={"0px 4px 6px rgba(0, 0, 0, 0.1)"}
       width={_700 ? "80%" : "90%"}
       borderRadius={"15px"}
-      sx={{ ":hover": { cursor: "pointer" } }}
+      alignItems="center"
+      bgcolor={darkMode ? "black" : "white"}
+      sx={{
+        ":hover": {
+          cursor: "pointer",
+          backgroundColor: darkMode ? "#1A1A1A" : "#f9f9f9",
+        },
+        transition: "background-color 0.3s ease",
+      }}
     >
-      <Stack direction={"row"} gap={2}>
+      <Stack direction={"row"} gap={2} alignItems="center">
         <Avatar src="" alt="profile" />
-        <Stack>
-          <Typography variant="h6" fontWeight={"bold"} fontSize={"1rem"}>
+        <Stack spacing={0.5}>
+          <Typography
+            variant="h6"
+            fontWeight={"bold"}
+            color={darkMode ? "white" : "gray"}
+            fontSize={"1rem"}
+          >
             Akshat
           </Typography>
-          <Typography variant="caption" fontSize={"1.1rem"} color="gray">
+          <Typography
+            variant="caption"
+            fontSize={"1rem"}
+            color={darkMode ? "white" : "gray"}
+          >
             checking bio
           </Typography>
-          <Typography variant="caption" fontSize={"1rem"}>
+          <Typography
+            variant="caption"
+            fontSize={"0.9rem"}
+            color={darkMode ? "whitesmoke" : "textSecondary"}
+          >
             3 followers
           </Typography>
         </Stack>
@@ -37,14 +61,16 @@ export const ProfileBar = () => {
       <Button
         sx={{
           border: "1px solid gray",
-          color: "black",
-          height: "40px",
-          p: "2",
+          color: darkMode ? "whitesmoke" : "black",
+
+          height: "36px",
+          px: 3,
+          borderRadius: "20px",
+          textTransform: "capitalize",
           ":hover": {
-            cursor: "pointer",
-            backgroundColor: "#d3d3d3",
+            backgroundColor: "#e0e0e0",
           },
-          margin: "1rem .5rem",
+          backgroundColor: darkMode ? "black" : "white",
         }}
       >
         Follow

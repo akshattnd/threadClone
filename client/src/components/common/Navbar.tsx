@@ -6,27 +6,37 @@ import {
   FavoriteBorderOutlined,
   PersonOutlineOutlined,
 } from "@mui/icons-material";
+import { useDispatch } from "react-redux";
+import { addPostModel } from "../../rtk/slice";
 
 const Navbar = () => {
+  const dispatch = useDispatch();
+
   return (
     <>
-      <Logo to="/" title="Home" icon={<HomeOutlined fontSize="large" />}></Logo>
+      <Logo to="/" title="Home" icon={<HomeOutlined fontSize="large" />} />
       <Logo
-        to="search"
+        to="/search"
         title="Search"
         icon={<SearchOutlined fontSize="large" />}
-      ></Logo>
-      <Logo to="add" title="Add" icon={<AddOutlined fontSize="large" />}></Logo>
+      />
       <Logo
-        to="activities"
+        title="Add"
+        icon={<AddOutlined fontSize="large" />}
+        onClick={() => {
+          dispatch(addPostModel(true));
+        }}
+      />
+      <Logo
+        to="/activities"
         title="Activities"
         icon={<FavoriteBorderOutlined fontSize="large" />}
-      ></Logo>
+      />
       <Logo
-        to="profile"
-        title="profile"
+        to="/profile"
+        title="Profile"
         icon={<PersonOutlineOutlined fontSize="large" />}
-      ></Logo>
+      />
     </>
   );
 };

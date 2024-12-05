@@ -1,5 +1,10 @@
 import React, { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Loading from "./components/common/Loading";
+import { useSelector } from "react-redux";
+import { RootState } from "./rtk/store";
+import { useMyProfileQuery } from "./rtk/service";
 
 const Home = lazy(() => import("./pages/Protected/Home"));
 const ProfileLayout = lazy(
@@ -9,49 +14,73 @@ const Threads = lazy(() => import("./pages/Protected/profile/Threads"));
 const Repost = lazy(() => import("./pages/Protected/profile/Repost"));
 const Replies = lazy(() => import("./pages/Protected/profile/Replies"));
 const Search = lazy(() => import("./pages/Protected/Search"));
-const Add = lazy(() => import("./pages/Protected/Add"));
 const Activities = lazy(() => import("./pages/Protected/Activities"));
 
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Login = lazy(() => import("./pages/Login"));
 const Layout = lazy(() => import("./pages/Protected/Layout"));
-import Loading from "./components/common/Loading";
 const SinglePost = lazy(() => import("./components/posts/SinglePost"));
 
 const App: React.FC = () => {
-  const data: boolean = true;
+  //@ts-ignore
+  const { darkMode, myProfile } = useSelector(
+    ({ service }: RootState) => service
+  );
+  // @ts-ignore
+  const data = useMyProfileQuery('');
+  console.log(data);
+  const theme = createTheme({
+    typography: {
+      fontFamily: "Arial, sans-serif", // Set the global font family
+      h1: {
+        fontFamily: "Roboto,Georgia, serif", // Specific font for h1
+        fontWeight: 700,
+        fontSize: "2.5rem",
+      },
+      body1: {
+        fontFamily: "Roboto,Verdana, sans-serif", // Specific font for body text
+      },
 
+      // Customize other variants as needed
+    },
+  });
   const router = createBrowserRouter([
     {
       path: "/",
 
-      element: data ? <Layout /> : <Login />,
+      element: (myProfile && data) ? <Layout /> : <Login />,
 
-      children: data && [
-        { index: true, element: <Home /> },
-        { path: "search", element: <Search /> },
-        { path: "add", element: <Add /> },
-        { path: "activities", element: <Activities /> },
+      children: (myProfile && data)
+        ? [
+          { index: true, element: <Home /> },
+          { path: "search", element: <Search /> },
+          { path: "activities", element: <Activities /> },
 
-        {
-          path: "profile",
-          element: <ProfileLayout />,
-          children: [
-            { index: true, element: <Threads /> },
-            { path: "post/:id", element: <SinglePost /> },
-            { path: "repost/:id", element: <Repost /> },
-            { path: "replies/:id", element: <Replies /> },
-          ],
-        },
-      ],
+          {
+            path: "profile",
+            element: <ProfileLayout />,
+            children: [
+              { index: true, element: <Threads /> },
+              { path: "post/:id", element: <SinglePost /> },
+              { path: "repost/:id", element: <Repost /> },
+              { path: "replies/:id", element: <Replies /> },
+            ],
+          },
+        ]
+        : [],
     },
     { path: "*", element: <NotFound /> },
   ]);
+  darkMode
+    ? document.body.classList.add("bg-black")
+    : document.body.classList.remove("bg-black");
 
   return (
     <>
       <Suspense fallback={<Loading />}>
-        <RouterProvider router={router} />
+        <ThemeProvider theme={theme}>
+          <RouterProvider router={router} />
+        </ThemeProvider>
       </Suspense>
     </>
   );

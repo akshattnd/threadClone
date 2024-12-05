@@ -9,41 +9,44 @@ const CustomTextField = styled(TextField)({
     "& fieldset": {
       borderColor: "gray",
     },
-
     "&:hover fieldset": {
       borderColor: "black",
     },
-
     "&.Mui-focused fieldset": {
       borderColor: "black",
     },
-
-    "&.Mui-focused.Mui-active fieldset": {
-      borderColor: "black",
-    },
   },
-
   "& .MuiInputBase-input": {
     color: "black",
   },
 });
+
 const SinglePost = () => {
-  const [coment, setComment] = useState<string>("");
+  const [comment, setComment] = useState<string>("");
+
   return (
     <>
-      <Stack direction="column" my={5} gap={2}>
+      <Stack direction="column" my={5} gap={3} width="90%" mx="auto">
         <Post />
-        <Stack direction="column" width={"80%"} mx={"auto"} my={5} gap={2}>
-          <Comments></Comments>
+        <Stack direction="column" gap={3}>
+          <Comments />
         </Stack>
         <CustomTextField
-          placeholder="comment here"
-          id={"comments"}
-          sx={{ width: "50%", mx: "auto", my: 5, p: 1 }}
-          onChange={(e) => {
-            setComment(e.target.value);
+          placeholder="Comment here"
+          id="comments"
+          variant="outlined"
+          fullWidth
+          value={comment}
+          sx={{
+            maxWidth: "600px",
+            mx: "auto",
+            mt: 2,
+            px: 2,
+            bgcolor: "#f9f9f9",
+            borderRadius: "5px",
           }}
-        ></CustomTextField>
+          onChange={(e) => setComment(e.target.value)}
+        />
       </Stack>
     </>
   );

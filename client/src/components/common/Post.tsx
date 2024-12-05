@@ -1,46 +1,82 @@
 import { LinearScaleOutlined } from "@mui/icons-material";
-import { Stack, Typography, useMediaQuery } from "@mui/material";
+import {
+  IconButton,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import React from "react";
 import PostOne from "../posts/PostOne";
 import PostTwo from "../posts/PostTwo";
-
+import { useDispatch, useSelector } from "react-redux";
+import { toggleMyMenu } from "../../rtk/slice";
+import { RootState } from "../../rtk/store";
 const Post: React.FC = () => {
-  const _700 = useMediaQuery("(min-width:700px)");
+  const { darkMode } = useSelector(({ service }: RootState) => service);
+  const theme = useTheme();
+  const isMediumScreen = useMediaQuery(theme.breakpoints.up("sm"));
+  const dispatch = useDispatch();
   return (
     <Stack
-      flexDirection={"row"}
-      justifyContent={"space-between"}
-      borderBottom={"2px solid gray"}
-      p={1}
-      mx={_700 ? "auto" : "0"}
-      width={_700 ? "70%" : "90%"}
+      flexDirection="row"
+      justifyContent="space-between"
+      borderBottom="2px solid gray"
+      p={isMediumScreen ? 1 : 0}
+      mx="auto"
+      my={1}
+      width={{ xs: "90%", sm: "70%" }}
+      maxWidth="800px" // Limit the maximum width for consistency
       sx={{ cursor: "pointer" }}
     >
-      <Stack flexDirection={"row"} gap={_700 ? 2 : 0}>
+      {/* Left Section: PostOne and PostTwo */}
+      <Stack flexDirection="row">
         <PostOne />
         <PostTwo />
       </Stack>
+
+      {/* Right Section: Time and Icon */}
       <Stack
-        direction={"row"}
-        justifyContent={"center"}
-        gap={0}
-        fontSize={_700 ? "1rem" : ".9rem"}
+        direction={"row"} // Stack vertically on small screens
+        justifyContent="start"
+        gap={1}
+        fontSize={{ xs: ".9rem", sm: "1rem" }}
+        width="100%" // Ensure it doesn't overflow
+        sx={{
+          maxWidth: "200px", // Optional: limit the maximum width to prevent it from expanding too much
+        }}
       >
         <Typography
           variant="caption"
-          gap={1}
-          position={"relative"}
+          position="relative"
           top={2}
-          fontSize={"1rem"}
-          color="GrayText"
+          fontSize="1rem"
+          color={darkMode ? "white" : "GrayText"}
         >
           24h
         </Typography>
-
-        <LinearScaleOutlined
-          fontSize={_700 ? "large" : "medium"}
-          className="text-gray-600"
-        />
+        <IconButton
+          sx={{
+            alignItems: "start",
+            paddingTop: 0,
+            height: "40px",
+            width: "40px",
+            ":hover": {
+              cursor: "pointer",
+            },
+          }}
+          onClick={(e) => {
+            console.log(e.currentTarget);
+            dispatch(toggleMyMenu(e.currentTarget));
+          }}
+        >
+          <LinearScaleOutlined
+            fontSize={isMediumScreen ? "large" : "medium"}
+            sx={{
+              color: darkMode ? "white" : "black", // Adapt icon color to dark mode
+            }}
+          />
+        </IconButton>
       </Stack>
     </Stack>
   );

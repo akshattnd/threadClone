@@ -1,23 +1,80 @@
-import React, { useState } from "react";
-import { Menu, MenuItem, IconButton } from "@mui/material";
-import { MenuOutlined } from "@mui/icons-material";
+import { Menu, MenuItem } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../rtk/store";
+import { addMyProfile, toggleMainMenu, toggleTheme } from "../../rtk/slice";
+import { useLogoutMutation } from "../../rtk/service";
+import { useEffect } from "react";
+
 const MainMenu = () => {
-  const handleClose = () => {};
-  const [open, setOpen] = useState<boolean>(false);
+  const [logout, logoutData] = useLogoutMutation();
+  const dispatch = useDispatch();
+  const { openMainMenu, darkMode } = useSelector(
+    (state: RootState) => state.service
+  );
+
+  const handleClose = () => {
+    dispatch(toggleMainMenu(null));
+  };
+
+  const handleLogout = async () => {
+    handleClose();
+    await logout('');
+
+  }
+  useEffect(() => {
+    if (logoutData.isSuccess) {
+      dispatch(addMyProfile(null));
+      window.location.reload();
+    }
+  }, [logoutData.isSuccess]);
+
   return (
     <div>
-      \ /* anchorEl need global variable for position*/
       <Menu
-        id="basic-menu"
-        open={open}
         onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
+        anchorEl={openMainMenu}
+        open={openMainMenu != null ? true : false}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        transformOrigin={{ vertical: "top", horizontal: "left" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        sx={{
+          "& .MuiPaper-root": {
+            backgroundColor: darkMode ? "#333" : "#fff", // Menu background
+            color: darkMode ? "#fff" : "#000", // Text color
+          },
+        }}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleClose();
+            dispatch(toggleTheme());
+          }}
+          sx={{
+            "&:hover": {
+              backgroundColor: darkMode ? "#444" : "#f0f0f0", // Hover effect
+            },
+          }}
+        >
+          Toggle Theme
+        </MenuItem>
+        <MenuItem
+          sx={{
+            "&:hover": {
+              backgroundColor: darkMode ? "#444" : "#f0f0f0",
+            },
+          }}
+        >
+          My Profile
+        </MenuItem>
+        <MenuItem
+          sx={{
+            "&:hover": {
+              backgroundColor: darkMode ? "#444" : "#f0f0f0",
+            },
+          }}
+          onClick={handleLogout}
+        >
+          Logout
+        </MenuItem>
       </Menu>
     </div>
   );
