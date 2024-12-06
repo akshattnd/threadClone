@@ -89,5 +89,5 @@ export const serviceSlice = createSlice({
 
     },
 });
-export const { addToSearchUser, deletePost, addSinglePost, searcUser, addPostModel, editProfileModel, toggleMainMenu, toggleMyMenu, toggleTheme, addMyProfile, addAllPost } = serviceSlice.actions;
+export const { addPostId, addToSearchUser, deletePost, addSinglePost, searcUser, addPostModel, editProfileModel, toggleMainMenu, toggleMyMenu, toggleTheme, addMyProfile, addAllPost } = serviceSlice.actions;
 export default serviceSlice.reducer

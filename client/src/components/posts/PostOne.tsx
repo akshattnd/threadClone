@@ -10,11 +10,13 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../rtk/store";
+import { Link } from "react-router-dom";
 
-const PostOne: React.FC = () => {
+const PostOne: React.FC<{ e: any }> = ({ e }) => {
   const theme = useTheme();
   const isMediumScreen = useMediaQuery(theme.breakpoints.up("sm"));
   const { darkMode } = useSelector(({ service }: RootState) => service);
+  console.log(e);
   return (
     <>
       <Stack
@@ -24,21 +26,23 @@ const PostOne: React.FC = () => {
         sx={{ height: "100%" }}
       >
         {/* Badge with Avatar */}
-        <Badge
-          badgeContent={"+"}
-          color={"info"}
-          overlap="circular"
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        >
-          <Avatar
-            alt="user-logo"
-            src=""
-            sx={{
-              width: isMediumScreen ? 36 : 28,
-              height: isMediumScreen ? 36 : 28,
-            }}
-          />
-        </Badge>
+        <Link to={`profile/${e?._id}`}>
+          <Badge
+            badgeContent={"+"}
+            color={"info"}
+            overlap="circular"
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          >
+            <Avatar
+              alt="user-logo"
+              src={e && e.admin ? e.admin.username : ""}
+              sx={{
+                width: isMediumScreen ? 36 : 28,
+                height: isMediumScreen ? 36 : 28,
+              }}
+            />
+          </Badge>
+        </Link>
 
         {/* Stepper and AvatarGroup */}
         <Stack
@@ -56,8 +60,8 @@ const PostOne: React.FC = () => {
               height: "100%",
             }}
           ></Stepper>
-          <AvatarGroup
-            max={2}
+          {e && e.comments?.length > 0 && <AvatarGroup
+            max={e.comments.length}
             sx={{
               "& .MuiAvatar-root": {
                 width: isMediumScreen ? 24 : 16,
@@ -66,10 +70,13 @@ const PostOne: React.FC = () => {
               },
             }}
           >
+
             <Avatar src=""></Avatar>
             <Avatar src=""></Avatar>
-            <Avatar src=""></Avatar>
-          </AvatarGroup>
+
+          </AvatarGroup>}
+
+
         </Stack>
       </Stack>
     </>

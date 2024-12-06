@@ -53,7 +53,7 @@ export const allPost = async (req: Request, res: Response): Promise<void> => {
         const posts = await Post.find({}).sort({ createdAt: -1 }).skip((pageNumber - 1) * 3).limit(3).populate("admin").populate("likes").populate({
             path: "comments", populate: {
                 path: "admin",
-                model: "Comment",
+                model: "User",
             }
         });
         res.status(200).json({ msg: "success in getting post", posts });

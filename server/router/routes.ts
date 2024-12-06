@@ -22,6 +22,6 @@ router.get("/post", auth, allPost);
 router.get("/post/:id", auth, singlePost);
 // comment routes
 router.post("/comment/:id", auth, addComment);
-router.delete("/comment/:id", auth, deleteComment);
+router.delete("/comment/:postId/:id", auth, deleteComment);
 
 export default router;

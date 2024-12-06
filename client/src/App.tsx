@@ -5,7 +5,6 @@ import Loading from "./components/common/Loading";
 import { useSelector } from "react-redux";
 import { RootState } from "./rtk/store";
 import { useMyProfileQuery } from "./rtk/service";
-
 const Home = lazy(() => import("./pages/Protected/Home"));
 const ProfileLayout = lazy(
   () => import("./pages/Protected/profile/ProfileLayout")
@@ -14,8 +13,6 @@ const Threads = lazy(() => import("./pages/Protected/profile/Threads"));
 const Repost = lazy(() => import("./pages/Protected/profile/Repost"));
 const Replies = lazy(() => import("./pages/Protected/profile/Replies"));
 const Search = lazy(() => import("./pages/Protected/Search"));
-const Activities = lazy(() => import("./pages/Protected/Activities"));
-
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Login = lazy(() => import("./pages/Login"));
 const Layout = lazy(() => import("./pages/Protected/Layout"));
@@ -27,8 +24,8 @@ const App: React.FC = () => {
     ({ service }: RootState) => service
   );
   // @ts-ignore
-  const data = useMyProfileQuery('');
-  console.log(data);
+  const { data, isError } = useMyProfileQuery('');
+
   const theme = createTheme({
     typography: {
       fontFamily: "Arial, sans-serif", // Set the global font family
@@ -48,16 +45,14 @@ const App: React.FC = () => {
     {
       path: "/",
 
-      element: (myProfile && data) ? <Layout /> : <Login />,
+      element: (!isError && data) ? <Layout /> : <Login />,
 
-      children: (myProfile && data)
+      children: (!isError && data)
         ? [
           { index: true, element: <Home /> },
           { path: "search", element: <Search /> },
-          { path: "activities", element: <Activities /> },
-
           {
-            path: "profile",
+            path: "profile/:id",
             element: <ProfileLayout />,
             children: [
               { index: true, element: <Threads /> },

@@ -31,17 +31,9 @@ const MyMenu = () => {
             },
           }}
         >
-          Unfollow
+          delete
         </MenuItem>
-        <MenuItem
-          sx={{
-            "&:hover": {
-              backgroundColor: darkMode ? "#444" : "#f0f0f0",
-            },
-          }}
-        >
-          Go to thread
-        </MenuItem>
+
       </Menu>
     </div>
   );

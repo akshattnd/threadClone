@@ -6,17 +6,32 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PostOne from "../posts/PostOne";
 import PostTwo from "../posts/PostTwo";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleMyMenu } from "../../rtk/slice";
+import { addPostId, toggleMyMenu } from "../../rtk/slice";
 import { RootState } from "../../rtk/store";
-const Post: React.FC = () => {
-  const { darkMode } = useSelector(({ service }: RootState) => service);
+const Post: React.FC<{ e: any }> = ({ e }) => {
+  const { darkMode, myProfile } = useSelector(({ service }: RootState) => service);
   const theme = useTheme();
   const isMediumScreen = useMediaQuery(theme.breakpoints.up("sm"));
   const dispatch = useDispatch();
+  const [admin, setAdmin] = useState<boolean>(false);
+  const checkAdmin = () => {
+    if (e.admin._id == myProfile._id) {
+      setAdmin(true);
+    } else {
+      setAdmin(false);
+    }
+  }
+  useEffect(() => {
+    if (e && myProfile) {
+      checkAdmin();
+    }
+  }, [e, myProfile])
+
+
   return (
     <Stack
       flexDirection="row"
@@ -31,8 +46,8 @@ const Post: React.FC = () => {
     >
       {/* Left Section: PostOne and PostTwo */}
       <Stack flexDirection="row">
-        <PostOne />
-        <PostTwo />
+        <PostOne e={e} />
+        <PostTwo e={e} />
       </Stack>
 
       {/* Right Section: Time and Icon */}
@@ -55,7 +70,7 @@ const Post: React.FC = () => {
         >
           24h
         </Typography>
-        <IconButton
+        {admin ? <IconButton
           sx={{
             alignItems: "start",
             paddingTop: 0,
@@ -65,9 +80,9 @@ const Post: React.FC = () => {
               cursor: "pointer",
             },
           }}
-          onClick={(e) => {
-            console.log(e.currentTarget);
-            dispatch(toggleMyMenu(e.currentTarget));
+          onClick={(event) => {
+            dispatch(toggleMyMenu(event.currentTarget));
+            dispatch(addPostId(e._id));
           }}
         >
           <LinearScaleOutlined
@@ -76,7 +91,25 @@ const Post: React.FC = () => {
               color: darkMode ? "white" : "black", // Adapt icon color to dark mode
             }}
           />
-        </IconButton>
+        </IconButton> : <IconButton
+          sx={{
+            alignItems: "start",
+            paddingTop: 0,
+            height: "40px",
+            width: "40px",
+            ":hover": {
+              cursor: "pointer",
+            },
+          }}
+        >
+          <LinearScaleOutlined
+            fontSize={isMediumScreen ? "large" : "medium"}
+            sx={{
+              color: darkMode ? "white" : "black", // Adapt icon color to dark mode
+            }}
+          />
+        </IconButton>}
+
       </Stack>
     </Stack>
   );

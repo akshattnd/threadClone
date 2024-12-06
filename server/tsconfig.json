@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "outDir": "./dist",
     "target": "ESNext", // Use ESNext for output
     "module": "ESNext", // Use ES modules
     "moduleResolution": "node", // Resolve modules like Node.js

@@ -28,11 +28,6 @@ const Navbar = () => {
         }}
       />
       <Logo
-        to="/activities"
-        title="Activities"
-        icon={<FavoriteBorderOutlined fontSize="large" />}
-      />
-      <Logo
         to="/profile"
         title="Profile"
         icon={<PersonOutlineOutlined fontSize="large" />}

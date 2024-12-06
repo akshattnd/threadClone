@@ -81,7 +81,7 @@ const serviceApi = createApi({
             //@ts-ignore
             providesTags: (result, error, arg, meta) => {
                 return result
-                    ? [...result.post.map((_: any, id: number) => { return { type: "post", id } }), { type: 'post', id: 'list' }]
+                    ? [...result.posts.map((_: any, id: number) => { return { type: "post", id } }), { type: 'post', id: 'list' }]
                     : [{ type: 'post', id: 'list' }];
             },
             // @ts-ignore
@@ -213,5 +213,5 @@ const serviceApi = createApi({
     }),
 
 })
-export const { useAddCommentMutation, useDeleteCommentMutation, useRepostMutation, useSinglePostQuery, useLikePostMutation, useDeletePostMutation, useAddPostMutation, useUpdateProfileMutation, useFollowUserMutation, useLogoutMutation, useSigninMutation, useLoginMutation, useMyProfileQuery } = serviceApi;
+export const { useAllPostQuery, useAddCommentMutation, useDeleteCommentMutation, useRepostMutation, useSinglePostQuery, useLikePostMutation, useDeletePostMutation, useAddPostMutation, useUpdateProfileMutation, useFollowUserMutation, useLogoutMutation, useSigninMutation, useLoginMutation, useMyProfileQuery } = serviceApi;
 export default serviceApi;

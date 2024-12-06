@@ -64,10 +64,8 @@ const PostTwo: React.FC = () => {
             width: isLargeScreen
               ? "400px"
               : isMediumScreen
-              ? "350px"
-              : isSmallScreen
-              ? "300px"
-              : "250px",
+                ? "380px"
+                : "350px",
             height: "300px",
             margin: "1 auto",
             borderRadius: "4px", // Slightly rounded corners
