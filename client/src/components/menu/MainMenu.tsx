@@ -4,11 +4,12 @@ import { RootState } from "../../rtk/store";
 import { addMyProfile, toggleMainMenu, toggleTheme } from "../../rtk/slice";
 import { useLogoutMutation } from "../../rtk/service";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const MainMenu = () => {
   const [logout, logoutData] = useLogoutMutation();
   const dispatch = useDispatch();
-  const { openMainMenu, darkMode } = useSelector(
+  const { openMainMenu, darkMode, myProfile } = useSelector(
     (state: RootState) => state.service
   );
 
@@ -56,15 +57,17 @@ const MainMenu = () => {
         >
           Toggle Theme
         </MenuItem>
-        <MenuItem
-          sx={{
-            "&:hover": {
-              backgroundColor: darkMode ? "#444" : "#f0f0f0",
-            },
-          }}
-        >
-          My Profile
-        </MenuItem>
+        <Link to={`profile/threads/${myProfile.user._id}`}>
+          <MenuItem
+            sx={{
+              "&:hover": {
+                backgroundColor: darkMode ? "#444" : "#f0f0f0",
+              },
+            }}
+          >
+            My Profile
+          </MenuItem>
+        </Link>
         <MenuItem
           sx={{
             "&:hover": {

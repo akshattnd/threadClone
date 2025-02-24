@@ -11,17 +11,49 @@ import {
 } from "@mui/material";
 import { RootState } from "../../rtk/store";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDeleteCommentMutation, useSinglePostQuery } from "../../rtk/service";
 
-const Comments = () => {
-  const { darkMode } = useSelector(({ service }: RootState) => service);
+const Comments = ({ e, postId }: { e: any, postId: any }) => {
+  const { darkMode, myProfile } = useSelector(({ service }: RootState) => service);
   const theme = useTheme();
   const isMediumScreen = useMediaQuery(theme.breakpoints.up("sm"));
-
-  const handleDeleteComment = () => {
-    // Logic for handling comment deletion
-  };
   const [commentMenu, setCommentMenu] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const { refetch } = useSinglePostQuery(postId);
+  const [deleteComment, deleteCommentData] = useDeleteCommentMutation();
+
+
+  const checkAdmin = () => {
+    if (e && myProfile) {
+      if (e.admin._id == myProfile.user._id) {
+        setIsAdmin(true);
+      }
+      return;
+    }
+    setIsAdmin(false);
+
+  }
+  const handleClose = () => {
+    setCommentMenu(null);
+  }
+  const handleDeleteComment = async () => {
+    await deleteComment({ id: e?._id, postId });
+    handleClose();
+    refetch();
+  };
+  useEffect(() => {
+    if (deleteCommentData.isSuccess) {
+      // success toast
+    }
+    if (deleteCommentData.isError) {
+      // error toast
+    }
+  }, [deleteCommentData.isSuccess, deleteCommentData.isError]);
+  useEffect(() => {
+    checkAdmin();
+  }, [])
+
   return (
     <>
       <Stack
@@ -36,7 +68,7 @@ const Comments = () => {
       >
         {/* User Info and Comment */}
         <Stack direction="row" gap={2}>
-          <Avatar src="" alt="User Avatar" />
+          <Avatar src={e?.admin ? e.admin.profileImg : ""} alt={e?.admin ? e.admin.username : " "} />
           <Stack direction="column">
             <Typography
               variant="h6"
@@ -44,19 +76,18 @@ const Comments = () => {
               color={darkMode ? "white" : "GrayText"}
               fontSize={{ xs: ".9rem", sm: "1rem" }}
             >
-              Akshattandon__
+              {e ? e.admin?.username : " "}
             </Typography>
             <Typography
               variant="subtitle2"
               fontSize={{ xs: ".8rem", sm: ".9rem" }}
               color={darkMode ? "white" : "GrayText"}
             >
-              this is comment
+              {e ? e?.text : " "}
             </Typography>
           </Stack>
         </Stack>
 
-        {/* Timestamp and Options */}
         <Stack
           direction="row"
           gap={2}
@@ -69,9 +100,9 @@ const Comments = () => {
             variant="subtitle1"
             fontSize="inherit"
           >
-            24 min
+            { }
           </Typography>
-          <IconButton
+          {isAdmin && <IconButton
             sx={{ alignItems: "start", paddingTop: "0px" }}
             onClick={(e) => {
               setCommentMenu(e.currentTarget);
@@ -81,7 +112,8 @@ const Comments = () => {
               fontSize={isMediumScreen ? "large" : "medium"}
               className={darkMode ? "text-white" : "text-gray-600"}
             />
-          </IconButton>
+          </IconButton>}
+
         </Stack>
       </Stack>
 
@@ -96,7 +128,8 @@ const Comments = () => {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "left" }}
         onClose={() => {
-          setCommentMenu(null);
+          handleClose();
+
         }}
       >
         <MenuItem onClick={handleDeleteComment}>Delete</MenuItem>

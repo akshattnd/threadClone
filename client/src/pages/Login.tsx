@@ -78,6 +78,7 @@ const SignUp: React.FC = () => {
         backgroundRepeat: "no-repeat",
         backgroundSize: isLargeScreen ? "100% 20rem" : "100% 12rem",
         objectFit: "cover",
+
       }}
     >
       <Stack

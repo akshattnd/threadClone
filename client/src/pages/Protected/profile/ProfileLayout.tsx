@@ -115,7 +115,7 @@ const ProfileLayout = () => {
           mx="auto"
           sx={{ color: darkMode ? "white" : "black" }}
         >
-          <Link to="">Threads</Link>
+          <Link to="threads/1">Threads</Link>
           <Link to="replies/1">Replies</Link>
           <Link to="repost/1">Repost</Link>
         </Stack>

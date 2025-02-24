@@ -12,6 +12,7 @@ import { addPostModel } from "../../rtk/slice";
 const Navbar = () => {
   const dispatch = useDispatch();
 
+
   return (
     <>
       <Logo to="/" title="Home" icon={<HomeOutlined fontSize="large" />} />

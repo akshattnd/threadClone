@@ -36,7 +36,9 @@ export const addPost = async (req: any, res: Response): Promise<void> => {
             }, {
                 new: true
             })
-            res.status(201).json({ msg: "post created!", newPost })
+            res.status(201
+
+            ).json({ msg: "post created!", newPost })
         })
 
     } catch (err) {
@@ -102,24 +104,41 @@ export const likePost = async (req: any, res: Response): Promise<any> => {
     try {
         const { id } = req.params;
         if (!id) {
-            return res.status(400).json({ msg: "post id is required" });
-
+            return res.status(400).json({ msg: "Post ID is required" });
         }
+
         const post = await Post.findById(id);
         if (!post) {
-            return res.status(400).json({ msg: "post doesnot exist!" });
+            return res.status(404).json({ msg: "Post doesn't exist!" });
         }
+
+        if (!req.user || !req.user._id) {
+            return res.status(401).json({ msg: "Unauthorized" });
+        }
+
+
+        let updatedPost;
         if (post.likes.includes(req.user._id)) {
-            await Post.findByIdAndUpdate(id, { $pull: { likes: req.user._id } }, { new: true });
-            res.status(200).json({ msg: "unliked posts!" });
+            updatedPost = await Post.findByIdAndUpdate(
+                id,
+                { $pull: { likes: req.user._id } },
+                { new: true }
+            );
+            return res.status(200).json({ msg: "Post unliked!" });
         } else {
-            await Post.findByIdAndUpdate(id, { $push: { likes: req.user._id } }, { new: true });
-            res.status(200).json({ msg: "liked posts!" });
+            updatedPost = await Post.findByIdAndUpdate(
+                id,
+                { $push: { likes: req.user._id } },
+                { new: true }
+            );
+
+            return res.status(200).json({ msg: "Post liked!" });
         }
     } catch (err) {
-        res.status(400).json({ msg: "Error while liking posts!", err: err instanceof Error ? err.message : String(err) });
+        return res.status(500).json({ msg: "Error while liking/unliking post", error: err instanceof Error ? err.message : String(err) });
     }
-}
+};
+
 export const repost = async (req: any, res: Response): Promise<any> => {
     try {
         const { id } = req.params;
@@ -129,9 +148,12 @@ export const repost = async (req: any, res: Response): Promise<any> => {
                 return res.status(400).json({ msg: "no post exist" });
             }
             const newId = new mongoose.Types.ObjectId(id);
-            if (req.user.reposts.includes(newId)) {
-                return res.status(400).json({ msg: "post is already been reposted!" });
+            const isAlreadyReposted = req.user.reposts.some(repost => repost._id.equals(newId));
+            if (isAlreadyReposted) {
+                res.status(400).json({ msg: "Post has already been reposted!" });
+                return;
             }
+
             await User.findByIdAndUpdate(req.user._id, {
                 $push: {
                     reposts: post._id,

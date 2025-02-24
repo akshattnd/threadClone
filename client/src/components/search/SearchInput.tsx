@@ -2,9 +2,14 @@ import { Search } from "@mui/icons-material";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../rtk/store";
+import { useState, useEffect } from "react";
 
 const SearchInput: React.FC = () => {
+  const [query, setQuery] = useState<string>("");
   const { darkMode } = useSelector(({ service }: RootState) => service);
+  const handleSearch = () => {
+
+  }
   return (
     <TextField
       placeholder="Search"
@@ -43,6 +48,8 @@ const SearchInput: React.FC = () => {
           padding: "10px 12px", // Adjusted padding for better alignment
         },
       }}
+      onChange={(e) => setQuery(e.target.value)}
+      onKeyUp={handleSearch}
     />
   );
 };

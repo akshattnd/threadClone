@@ -79,11 +79,11 @@ const serviceApi = createApi({
                 method: 'GET',
             }),
             //@ts-ignore
-            providesTags: (result, error, arg, meta) => {
-                return result
-                    ? [...result.posts.map((_: any, id: number) => { return { type: "post", id } }), { type: 'post', id: 'list' }]
-                    : [{ type: 'post', id: 'list' }];
-            },
+            providesTags: (result) =>
+                result
+                    ? [...result.posts.map((post: any) => ({ type: "Post", id: post._id })), { type: "Post", id: "LIST" }]
+                    : [{ type: "Post", id: "LIST" }],
+
             // @ts-ignore
             async onQueryStarted(arg, api) {
                 try {
@@ -146,8 +146,7 @@ const serviceApi = createApi({
         deletePost: builder.mutation({
             query: (id) => ({
                 url: `post/${id}`,
-                mothod: `DELETE`,
-
+                method: `DELETE`,
             }),
             //@ts-ignore
             async onQueryStarted(arg, api) {
@@ -167,22 +166,16 @@ const serviceApi = createApi({
                 url: `post/like/${id}`,
                 method: "PUT",
             }),
-            // @ts-ignore
-            invalidatesTags(result, error, { id }, meta) {
-                return [{ type: "Post", id }];
-
-            },
+            invalidatesTags: (result, error, { id }) => [{ type: "Post", id }],
         }),
+
         singlePost: builder.query({
             query: (id) => ({
                 url: `post/${id}`,
                 method: "GET",
             }),
             // @ts-ignore
-            providesTags(result, error, { id }, meta) {
-                return [{ type: "Post", id }]
-
-            },
+            providesTags: (result, error, { id }) => [{ type: "Post", id }],
 
         }),
         repost: builder.mutation({
@@ -199,19 +192,35 @@ const serviceApi = createApi({
                 method: "POST",
                 body: data,
             }),
+            invalidatesTags: ["User"],
         }),
         deleteComment: builder.mutation({
-            query: ({ id }) => ({
-                url: `comment/${id}`,
+            query: ({ postId, id }) => ({
+                url: `comment/${postId}/${id}`,
+
                 method: "DELETE",
             }),
             // @ts-ignore
-            invalidatesTags: (result, err, { id }) => {
-                return [{ type: "User", id }];
+            invalidatesTags: (result, err, { postId }) => {
+                return [{ type: "Post", id: postId }];
             },
         }),
+
     }),
 
 })
-export const { useAllPostQuery, useAddCommentMutation, useDeleteCommentMutation, useRepostMutation, useSinglePostQuery, useLikePostMutation, useDeletePostMutation, useAddPostMutation, useUpdateProfileMutation, useFollowUserMutation, useLogoutMutation, useSigninMutation, useLoginMutation, useMyProfileQuery } = serviceApi;
+export const { useAllPostQuery,
+    useAddCommentMutation,
+    useDeleteCommentMutation,
+    useRepostMutation,
+    useSinglePostQuery,
+    useLikePostMutation,
+    useDeletePostMutation,
+    useAddPostMutation,
+    useUpdateProfileMutation,
+    useFollowUserMutation,
+    useLogoutMutation,
+    useSigninMutation,
+    useLoginMutation,
+    useMyProfileQuery } = serviceApi;
 export default serviceApi;

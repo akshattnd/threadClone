@@ -30,7 +30,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use("/api", router);
 app.get('/', (req, res) => {
-    res.send('checking World');
+    res.send('All good backend in working fine');
 });
 dbConnect().then(() => {
     app.listen(port, () => {

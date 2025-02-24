@@ -94,12 +94,12 @@ export const login = async (req: Request, res: Response): Promise<any> => {
 
         }
         res.cookie("token", token, {
-            maxAge: 1000 * 3600 * 24 * 3,
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            partitioned: true,
-        })
+            maxAge: 1000 * 3600 * 24, // 1 day
+            httpOnly: true, // ✅ Prevents XSS attacks
+            secure: process.env.NODE_ENV === "production", // ✅ Only true in production (HTTPS)
+            sameSite: "lax", // ✅ Ensures cookies work properly
+
+        });
         res.status(201).json({ msg: "Login successfull!" });
 
     } catch (err) {

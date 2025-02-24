@@ -7,8 +7,9 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../rtk/store";
+import { Link } from "react-router-dom";
 
-export const ProfileBar = () => {
+export const ProfileBar = ({ e }: { e: any }) => {
   const { darkMode } = useSelector(({ service }: RootState) => service);
   const _700 = useMediaQuery("(min-width:700px)");
   return (
@@ -32,49 +33,53 @@ export const ProfileBar = () => {
       }}
     >
       <Stack direction={"row"} gap={2} alignItems="center">
-        <Avatar src="" alt="profile" />
+        <Avatar src={e ? e.profileImg : ""} alt={e ? e.username : ""} />
         <Stack spacing={0.5}>
-          <Typography
-            variant="h6"
-            fontWeight={"bold"}
-            color={darkMode ? "white" : "gray"}
-            fontSize={"1rem"}
-          >
-            Akshat
-          </Typography>
+          <Link to={`profile/threads/${e._id}`}>
+            <Typography
+              variant="h6"
+              fontWeight={"bold"}
+              color={darkMode ? "white" : "gray"}
+              fontSize={"1rem"}
+            >
+              {e ? e.username : " "}
+            </Typography>
+          </Link>
           <Typography
             variant="caption"
             fontSize={"1rem"}
             color={darkMode ? "white" : "gray"}
           >
-            checking bio
+            {e ? e.bio : " "}
           </Typography>
           <Typography
             variant="caption"
             fontSize={"0.9rem"}
             color={darkMode ? "whitesmoke" : "textSecondary"}
           >
-            3 followers
+            {e ? e.followers.length : 0} followers
           </Typography>
         </Stack>
       </Stack>
-      <Button
-        sx={{
-          border: "1px solid gray",
-          color: darkMode ? "whitesmoke" : "black",
+      <Link to={`profile/threads/${e._id}`} className="cursor-pointer">
+        <Button
+          sx={{
+            border: "1px solid gray",
+            color: darkMode ? "whitesmoke" : "black",
 
-          height: "36px",
-          px: 3,
-          borderRadius: "20px",
-          textTransform: "capitalize",
-          ":hover": {
-            backgroundColor: "#e0e0e0",
-          },
-          backgroundColor: darkMode ? "black" : "white",
-        }}
-      >
-        Follow
-      </Button>
+            height: "36px",
+            px: 3,
+            borderRadius: "20px",
+            textTransform: "capitalize",
+            ":hover": {
+              backgroundColor: "#e0e0e0",
+            },
+            backgroundColor: darkMode ? "black" : "white",
+          }}
+        >
+          Follow
+        </Button>
+      </Link>
     </Stack>
   );
 };

@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "client": "cd client && bun run dev",
+    "server": "cd server && bun run dev",
+    "dev": "concurrently  \"bun run client\" \"bun run server\" "
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

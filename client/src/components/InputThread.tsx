@@ -7,14 +7,16 @@ import {
   useTheme,
 } from "@mui/material";
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addPostModel } from "../rtk/slice";
+import { RootState } from "../rtk/store";
 
 const InputThread: React.FC = () => {
   const theme = useTheme();
-  const isMediumScreen = useMediaQuery(theme.breakpoints.up("md")); // 768px and above
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm")); // 600px and below
+  const isMediumScreen = useMediaQuery(theme.breakpoints.up("md"));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const dispatch = useDispatch();
+  const { myProfile } = useSelector((state: RootState) => state.service);
   return (
     <Stack
       onClick={() => {
@@ -23,17 +25,17 @@ const InputThread: React.FC = () => {
       flexDirection={"row"}
       alignItems={"center"}
       justifyContent={"space-between"}
-      width={isMediumScreen ? "70%" : "90%"} // Width adjusts based on screen size
+      width={isMediumScreen ? "70%" : "90%"}
       mx={"auto"}
       height={"3.5rem"}
       my={4}
-      py={isSmallScreen ? 1 : 0} // Extra padding for smaller screens
+      py={isSmallScreen ? 1 : 0}
       borderBottom={"2px solid gray"}
       sx={{
-        gap: isSmallScreen ? 1 : 2, // Adjusts spacing between elements for smaller screens
+        gap: isSmallScreen ? 1 : 2,
       }}
     >
-      {/* Left section: Avatar and Placeholder */}
+
       <Stack
         flexDirection={"row"}
         alignItems={"center"}
@@ -41,7 +43,7 @@ const InputThread: React.FC = () => {
       >
         <Avatar
           alt="user-logo"
-          src=""
+          src={myProfile ? myProfile.profileImg : " "}
           sx={{
             width: isSmallScreen ? 36 : 48,
             height: isSmallScreen ? 36 : 48,
@@ -49,13 +51,13 @@ const InputThread: React.FC = () => {
         />
         <Typography
           color={"GrayText"}
-          fontSize={isSmallScreen ? "0.9rem" : "1rem"} // Font size scales with screen size
+          fontSize={isSmallScreen ? "0.9rem" : "1rem"}
         >
           Start a thread...
         </Typography>
       </Stack>
 
-      {/* Post button */}
+
       <Button
         size={isSmallScreen ? "small" : "medium"}
         sx={{

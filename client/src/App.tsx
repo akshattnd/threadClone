@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Loading from "./components/common/Loading";
 import { useSelector } from "react-redux";
@@ -15,7 +15,7 @@ const Replies = lazy(() => import("./pages/Protected/profile/Replies"));
 const Search = lazy(() => import("./pages/Protected/Search"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Login = lazy(() => import("./pages/Login"));
-const Layout = lazy(() => import("./pages/Protected/Layout"));
+import Layout from "./pages/Protected/Layout";
 const SinglePost = lazy(() => import("./components/posts/SinglePost"));
 
 const App: React.FC = () => {
@@ -41,40 +41,43 @@ const App: React.FC = () => {
       // Customize other variants as needed
     },
   });
-  const router = createBrowserRouter([
-    {
-      path: "/",
 
-      element: (!isError && data) ? <Layout /> : <Login />,
-
-      children: (!isError && data)
-        ? [
-          { index: true, element: <Home /> },
-          { path: "search", element: <Search /> },
-          {
-            path: "profile/:id",
-            element: <ProfileLayout />,
-            children: [
-              { index: true, element: <Threads /> },
-              { path: "post/:id", element: <SinglePost /> },
-              { path: "repost/:id", element: <Repost /> },
-              { path: "replies/:id", element: <Replies /> },
-            ],
-          },
-        ]
-        : [],
-    },
-    { path: "*", element: <NotFound /> },
-  ]);
   darkMode
     ? document.body.classList.add("bg-black")
     : document.body.classList.remove("bg-black");
 
+  if (isError || !data) {
+    return (
+      <Suspense fallback={<Loading />}>
+        <ThemeProvider theme={theme}>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/*" element={<Login />} />
+            </Routes>
+          </BrowserRouter>
+        </ThemeProvider>
+      </Suspense>
+    );
+  }
   return (
     <>
       <Suspense fallback={<Loading />}>
         <ThemeProvider theme={theme}>
-          <RouterProvider router={router} />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route path="" element={<Home />} />
+                <Route path="post/:id" element={<SinglePost />} />
+                <Route path="search" element={<Search />} />
+                <Route path="profile" element={<ProfileLayout />}>
+                  <Route path="threads/:id" element={<Threads />} />
+                  <Route path="replies/:id" element={<Replies />} />
+                  <Route path="reposts/:id" element={<Repost />} />
+                </Route>
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
         </ThemeProvider>
       </Suspense>
     </>

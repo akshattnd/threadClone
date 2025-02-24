@@ -19,7 +19,7 @@ const Post: React.FC<{ e: any }> = ({ e }) => {
   const dispatch = useDispatch();
   const [admin, setAdmin] = useState<boolean>(false);
   const checkAdmin = () => {
-    if (e.admin._id == myProfile._id) {
+    if (e.admin._id == myProfile.user._id) {
       setAdmin(true);
     } else {
       setAdmin(false);
@@ -28,6 +28,7 @@ const Post: React.FC<{ e: any }> = ({ e }) => {
   useEffect(() => {
     if (e && myProfile) {
       checkAdmin();
+      console.log(e);
     }
   }, [e, myProfile])
 

@@ -16,7 +16,7 @@ const PostOne: React.FC<{ e: any }> = ({ e }) => {
   const theme = useTheme();
   const isMediumScreen = useMediaQuery(theme.breakpoints.up("sm"));
   const { darkMode } = useSelector(({ service }: RootState) => service);
-  console.log(e);
+
   return (
     <>
       <Stack
@@ -35,7 +35,7 @@ const PostOne: React.FC<{ e: any }> = ({ e }) => {
           >
             <Avatar
               alt="user-logo"
-              src={e && e.admin ? e.admin.username : ""}
+              src={e?.admin ? e.admin.profileImg : ""}
               sx={{
                 width: isMediumScreen ? 36 : 28,
                 height: isMediumScreen ? 36 : 28,
@@ -60,8 +60,8 @@ const PostOne: React.FC<{ e: any }> = ({ e }) => {
               height: "100%",
             }}
           ></Stepper>
-          {e && e.comments?.length > 0 && <AvatarGroup
-            max={e.comments.length}
+          {e?.comments && e.comments.length > 0 && <AvatarGroup
+            max={e.comments.length > 2 ? e.comments.length : 2}
             sx={{
               "& .MuiAvatar-root": {
                 width: isMediumScreen ? 24 : 16,
@@ -71,11 +71,11 @@ const PostOne: React.FC<{ e: any }> = ({ e }) => {
             }}
           >
 
-            <Avatar src=""></Avatar>
-            <Avatar src=""></Avatar>
+            <Avatar src={e.comments[0].admin.profileImg}
+              alt={e.comments[0].admin.username}></Avatar>
+            {e.comments.length > 1 && <Avatar src={e.comments[1].admin.profileImg} alt={e.comments[1].admin.username}></Avatar>}
 
           </AvatarGroup>}
-
 
         </Stack>
       </Stack>
