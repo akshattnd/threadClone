@@ -1,15 +1,27 @@
 import { Search } from "@mui/icons-material";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../rtk/store";
 import { useState, useEffect } from "react";
+import { useLazySearchuserQuery } from "../../rtk/service";
+import { addToSearchUser } from "../../rtk/slice";
 
 const SearchInput: React.FC = () => {
+  const dispatch = useDispatch();
   const [query, setQuery] = useState<string>("");
   const { darkMode } = useSelector(({ service }: RootState) => service);
-  const handleSearch = () => {
+  const [searchUser, searchUserData] = useLazySearchuserQuery();
+  const handleSearch = async (e) => {
+    if (query && e.key == 'Enter') {
+      await searchUser(query);
+    }
 
   }
+  useEffect(() => {
+    if (searchUserData.isSuccess) {
+      dispatch(addToSearchUser(searchUserData.data.user));
+    }
+  }, [searchUserData.isSuccess, searchUserData.isError])
   return (
     <TextField
       placeholder="Search"

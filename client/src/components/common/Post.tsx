@@ -28,7 +28,7 @@ const Post: React.FC<{ e: any }> = ({ e }) => {
   useEffect(() => {
     if (e && myProfile) {
       checkAdmin();
-      console.log(e);
+
     }
   }, [e, myProfile])
 
@@ -71,7 +71,7 @@ const Post: React.FC<{ e: any }> = ({ e }) => {
         >
           24h
         </Typography>
-        {admin ? <IconButton
+        {admin && <IconButton
           sx={{
             alignItems: "start",
             paddingTop: 0,
@@ -92,25 +92,7 @@ const Post: React.FC<{ e: any }> = ({ e }) => {
               color: darkMode ? "white" : "black", // Adapt icon color to dark mode
             }}
           />
-        </IconButton> : <IconButton
-          sx={{
-            alignItems: "start",
-            paddingTop: 0,
-            height: "40px",
-            width: "40px",
-            ":hover": {
-              cursor: "pointer",
-            },
-          }}
-        >
-          <LinearScaleOutlined
-            fontSize={isMediumScreen ? "large" : "medium"}
-            sx={{
-              color: darkMode ? "white" : "black", // Adapt icon color to dark mode
-            }}
-          />
         </IconButton>}
-
       </Stack>
     </Stack>
   );

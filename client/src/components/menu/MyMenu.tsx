@@ -10,9 +10,9 @@ const MyMenu = () => {
   const { openMyMenu, darkMode, postId } = useSelector(
     (state: RootState) => state.service
   );
+
   const [deletePost, deletePostData] = useDeletePostMutation();
   const handleDeletePost = async () => {
-    console.log(postId);
     dispatch(toggleMyMenu(null));
     await deletePost(postId);
   }
@@ -41,6 +41,7 @@ const MyMenu = () => {
           },
         }}
       >
+
         <MenuItem
           sx={{
             "&:hover": {
@@ -51,6 +52,7 @@ const MyMenu = () => {
         >
           Delete
         </MenuItem>
+
       </Menu>
     </div>
   );

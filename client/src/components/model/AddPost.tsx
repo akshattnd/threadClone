@@ -12,13 +12,16 @@ import {
   useTheme,
 } from "@mui/material";
 import { CloseOutlined, PermMediaOutlined } from "@mui/icons-material";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addPostModel } from "../../rtk/slice";
 import { RootState } from "../../rtk/store";
+import { useAddPostMutation } from "../../rtk/service";
+import Loading from "../common/Loading";
+import { Bounce, toast } from "react-toastify";
 
 const AddPost = () => {
-  const { openAddPostModel, darkMode } = useSelector(
+  const { openAddPostModel, darkMode, myProfile } = useSelector(
     (state: RootState) => state.service
   );
   const [text, setText] = useState<string>("");
@@ -27,7 +30,52 @@ const AddPost = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const isMediumScreen = useMediaQuery(theme.breakpoints.up("md")); // 768px and above
+  const [addPost, addPostData] = useAddPostMutation();
+  const handleAddPost = async () => {
+    try {
+      const data = new FormData();
+      if (text) {
+        data.append('text', text);
+      }
+      if (media) {
+        data.append('media', media);
+      }
+      await addPost(data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  useEffect(() => {
 
+    if (addPostData.isSuccess) {
+
+      setText("");
+      setMedia("");
+      dispatch(addPostModel(false));
+      toast.success(addPostData.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+        transition: Bounce,
+      });
+    }
+    if (addPostData.isError) {
+      toast.error(addPostData.error?.data?.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+        transition: Bounce,
+      });
+    }
+  }, [addPostData.isSuccess, addPostData.isError])
   const handleClose = () => {
     dispatch(addPostModel(false));
   };
@@ -50,7 +98,7 @@ const AddPost = () => {
           },
         }}
       >
-        {/* Close Button */}
+
         <Box position="absolute" top={20} right={20} onClick={handleClose}>
           <IconButton sx={{ color: darkMode ? "#f1f1f1" : "#000" }}>
             <CloseOutlined />
@@ -68,18 +116,17 @@ const AddPost = () => {
           New Thread
         </DialogTitle>
 
-        {/* Dialog Content */}
-        <DialogContent>
-          {/* User and Input Section */}
+        {addPostData.isLoading ? <Loading /> : <DialogContent>
+
           <Stack direction="row" gap={2} mb={4} alignItems="flex-start">
-            <Avatar src="" alt="User Avatar" />
+            <Avatar src={myProfile.user ? myProfile.user.profileImg : ""} alt={myProfile.user ? myProfile.user.username : ""} />
             <Stack flexGrow={1} gap={2}>
               <Typography
                 variant="h6"
                 fontWeight="bold"
                 sx={{ color: darkMode ? "#e0e0e0" : "#000" }}
               >
-                akshattandon__
+                {myProfile.user.username ?? " "}
               </Typography>
               <textarea
                 rows={3}
@@ -168,7 +215,8 @@ const AddPost = () => {
               Post
             </Button>
           </Stack>
-        </DialogContent>
+        </DialogContent>}
+
       </Dialog>
     </div>
   );

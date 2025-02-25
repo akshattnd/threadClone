@@ -209,7 +209,7 @@ const serviceApi = createApi({
     }),
 
 })
-export const { useAllPostQuery,
+export const { useUserDetailsQuery, useAllPostQuery,
     useAddCommentMutation,
     useDeleteCommentMutation,
     useRepostMutation,
@@ -222,5 +222,5 @@ export const { useAllPostQuery,
     useLogoutMutation,
     useSigninMutation,
     useLoginMutation,
-    useMyProfileQuery } = serviceApi;
+    useMyProfileQuery, useLazySearchuserQuery } = serviceApi;
 export default serviceApi;

@@ -23,7 +23,7 @@ const initialState: IinitialState = {
     darkMode: false,
     myProfile: null,
     allPost: [],
-    userData: [],
+    userData: {},
     searchUsers: [],
     postId: "",
 

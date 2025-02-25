@@ -9,7 +9,7 @@ export const Logo: React.FC<LogoType> = ({ to, title, icon, onClick }) => {
   return (
     <Tooltip title={title}>
       {to ? (
-        <Link to={to}>
+        <Link to={to} >
           {onClick ? (
             <Button
               color="inherit"

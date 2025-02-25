@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../rtk/store";
 import { useLikePostMutation, useRepostMutation, useSinglePostQuery } from "../../rtk/service";
 import { Link } from "react-router-dom";
-
+import { toast, Bounce } from "react-toastify";
 const PostTwo: React.FC<{ e: any }> = ({ e }) => {
   const theme = useTheme();
   const isMediumScreen = useMediaQuery(theme.breakpoints.up("md"));
@@ -45,10 +45,34 @@ const PostTwo: React.FC<{ e: any }> = ({ e }) => {
     setIsLiked(false);
   };
   useEffect(() => {
-    if (repostData.isError) { }
-    if (repostData.isSuccess) { }
+    if (repostData.isError) {
+      toast.error(repostData.error?.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+        transition: Bounce,
+      });
+
+    }
+    if (repostData.isSuccess) {
+      toast.success(repostData.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+        transition: Bounce,
+      });
+    }
   }, [repostData.isSuccess, repostData.isError]);
   useEffect(() => {
+
 
     checkIsLiked();
   }, [e]);
@@ -114,6 +138,7 @@ const PostTwo: React.FC<{ e: any }> = ({ e }) => {
           </Typography>
         </Stack>
       </Stack>
+
     </Stack>
   );
 };

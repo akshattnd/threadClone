@@ -9,12 +9,54 @@ import {
 import { Instagram } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { editProfileModel } from "../../../rtk/slice";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useParams } from "react-router-dom";
 import { RootState } from "../../../rtk/store";
+import { useFollowUserMutation, useUserDetailsQuery } from "../../../rtk/service";
+import { useEffect, useState } from "react";
+import EditProfile from "../../../components/model/EditProfile";
 
 const ProfileLayout = () => {
   const dispatch = useDispatch();
-  const { darkMode } = useSelector(({ service }: RootState) => service);
+  const { darkMode, myProfile } = useSelector(({ service }: RootState) => service);
+  const params = useParams();
+  const { data } = useUserDetailsQuery(params?.id);
+  const [followUser, followUserData] = useFollowUserMutation();
+  const [isFollowing, setIsFollowing] = useState<boolean>(false);
+  const [myAccount, setMyAccount] = useState<boolean>(false);
+  const checkIsFollowing = () => {
+    if (data && myProfile) {
+      const follow = data.user.followers.filter((e: any) => e._id == myProfile.user?._id);
+      if (follow.lenght > 0) {
+        setIsFollowing(true);
+        return;
+      }
+
+    }
+    setIsFollowing(false);
+  }
+  const checkIsMyAccount = () => {
+
+    if (data && myProfile) {
+      const isTrue = data.user?._id == myProfile?.user?._id;
+      setMyAccount(isTrue);
+    }
+  };
+  const handleFollow = async () => {
+    if (data) {
+      await followUser(data?.user?._id);
+    }
+  }
+  useEffect(() => {
+
+    checkIsFollowing();
+    checkIsMyAccount();
+    console.log(data);
+
+  }, [isFollowing, myAccount]);
+  useEffect(() => {
+    if (followUserData.isError) { }
+    if (followUserData.isSuccess) { }
+  }, [followUserData.isError, followUserData.isSuccess]);
   return (
     <>
       <Stack
@@ -38,7 +80,7 @@ const ProfileLayout = () => {
               fontWeight="bold"
               fontSize={{ xs: "1.5rem", sm: "2rem" }}
             >
-              akshattandon__
+              {data?.user ? data.user.username : " "}
             </Typography>
             <Stack direction="row" alignItems="center" gap={1}>
               <Typography
@@ -46,7 +88,7 @@ const ProfileLayout = () => {
                 fontSize={{ xs: "1rem", sm: "1.1rem" }}
                 sx={{ color: darkMode ? "lightgray" : "gray" }}
               >
-                akshattandon__
+                {data?.user ? data.user.email : ""}
               </Typography>
               <Chip
                 label="threads.net"
@@ -59,15 +101,16 @@ const ProfileLayout = () => {
               />
             </Stack>
           </Stack>
-          <Avatar src="" alt="" sx={{ width: 60, height: 60 }} />
+          <Avatar src={data?.user ? data.user.profilePic : ""}
+            alt={data?.user ? data.user.username : ""} sx={{ width: 60, height: 60 }} />
         </Stack>
 
         {/* Bio Section */}
         <Typography
           variant="subtitle2"
-          sx={{ color: darkMode ? "white" : "black" }}
+          sx={{ color: darkMode ? "lightgray" : "gray" }}
         >
-          This is bio!
+          {data?.user ? data.user.bio : "bio"}
         </Typography>
 
         {/* Followers and Icon Section */}
@@ -80,7 +123,7 @@ const ProfileLayout = () => {
             variant="subtitle2"
             color={darkMode ? "lightgray" : "gray"}
           >
-            19 followers
+            {data?.user && data.user.followers.length} followers
           </Typography>
           <IconButton size="large">
             <Instagram sx={{ color: darkMode ? "white" : "gray" }} />
@@ -96,11 +139,13 @@ const ProfileLayout = () => {
             border: darkMode ? "1px solid white" : "1px solid black",
             color: darkMode ? "white" : "black",
             borderRadius: ".8rem",
+
           }}
-          onClick={() => dispatch(editProfileModel(true))}
+          onClick={myAccount ? () => dispatch(editProfileModel(true)) : () => { handleFollow() }}
         >
-          Edit Profile
+          {myAccount ? "Edit Profile" : isFollowing ? "Follow user" : "followed"}
         </Button>
+
 
         {/* Navigation Links */}
         <Stack
@@ -115,12 +160,13 @@ const ProfileLayout = () => {
           mx="auto"
           sx={{ color: darkMode ? "white" : "black" }}
         >
-          <Link to="threads/1">Threads</Link>
-          <Link to="replies/1">Replies</Link>
-          <Link to="repost/1">Repost</Link>
+          <Link to={`threads/${data?.user._id}`}>Threads</Link>
+          <Link to={`replies/${data?.user._id}`}>Replies</Link>
+          <Link to={`reposts/${data?.user._id}`}>Repost</Link>
         </Stack>
       </Stack>
       <Outlet />
+      <EditProfile />
     </>
   );
 };
